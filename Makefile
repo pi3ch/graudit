@@ -1,9 +1,11 @@
-####
+###
 # Graudit makefile
 ###
 
-PREFIX := 'P===='
-DBDIR := 'D===='
+prefix = /usr
+dataroot = $(prefix)/share
+datadir = $(dataroot)/graudit
+bindir = $(prefix)/bin
 SIGNATURES := signatures/default.db signatures/php.db  signatures/perl.db signatures/python.db signatures/asp.db signatures/java.db signatures/strings.db signatures/c.db signatures/dotnet.db signatures/ruby.db signatures/actionscript.db signatures/ios.db signatures/android.db signatures/all.db
 DISTFILES := Changelog  graudit  LICENSE  README graudit.1
 VERSION=`./graudit -v | cut -d' ' -f 3`
@@ -31,24 +33,16 @@ userinstall: $(DISTFILES) test
 	mkdir -p ~/bin
 	cp -f graudit ~/bin
 
-install: $(DISTFILES) test
-ifeq ($(PREFIX),'P====')
-	@echo 'Prefix not configured, run configure first'
-	exit 1
-endif
-ifeq ( $(DBDIR), 'D====' )
-	@echo 'dbdir not configured, run configure first'
-	exit 1
-endif
-	mkdir -p $(PREFIX)
-	mkdir -p $(DBDIR)
-	cp -f $(SIGNATURES) $(DBDIR)
-	cp -f $(DISTFILES) $(DBDIR)
-	mv $(DBDIR)/graudit $(PREFIX)/graudit
+install: manpages $(DISTFILES) test
+	mkdir -p $(bindir)
+	mkdir -p $(datadir)
+	cp -f $(SIGNATURES) $(datadir)
+	cp -f $(DISTFILES) $(datadir)
+	mv $(datadir)/graudit $(bindir)/graudit
 
 uninstall:
-	rm -f $(PREFIX)/graudit
-	rm -rf $(DBDIR)
+	rm -f $(bindir)/graudit
+	rm -rf $(datadir)
 
 clean:
 	rm -f graudit-*.tar.gz graudit-*.zip
